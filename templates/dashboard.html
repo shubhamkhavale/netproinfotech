@@ -1,0 +1,484 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - NETPRO INFOTECH{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 25px;
+        height: 100%;
+        min-height: calc(100vh - 100px);
+    }
+    
+    .dashboard-sidebar {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+    
+    .dashboard-main {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .stat-card-dashboard {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border-left: 5px solid #667eea;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card-dashboard.success { border-left-color: #00a86b; }
+    .stat-card-dashboard.warning { border-left-color: #ffc107; }
+    .stat-card-dashboard.danger { border-left-color: #dc3545; }
+    
+    .stat-card-dashboard:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card-dashboard::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 50%;
+        transform: translate(50%, -50%);
+    }
+    
+    .stat-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .stat-info h6 {
+        color: #999;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0 0 0.5rem 0;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        opacity: 0.2;
+    }
+    
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .nav-section {
+        margin-bottom: 2rem;
+    }
+    
+    .nav-section-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .nav-item-dashboard {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #666;
+        transition: all 0.3s;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .nav-item-dashboard:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding-left: 1.25rem;
+    }
+    
+    .nav-item-dashboard.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .nav-item-dashboard i {
+        width: 20px;
+        margin-right: 12px;
+        text-align: center;
+    }
+    
+    .header-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 1.5rem;
+    }
+    
+    .quick-action-btn {
+        background: white;
+        color: #667eea;
+        border: 2px solid transparent;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .quick-action-btn:hover {
+        border-color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .quick-action-btn i {
+        font-size: 1.5rem;
+    }
+    
+    .content-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .content-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .content-card-header h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .dashboard-sidebar {
+            position: relative;
+            top: 0;
+        }
+        
+        .stats-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Header Section -->
+<div class="header-section">
+    <h1 class="mb-1">
+        <i class="fas fa-wave-square me-2"></i>Welcome back, {{ user.username }}!
+    </h1>
+    <p class="mb-0" style="opacity: 0.9;">Here's what's happening with your business today</p>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions-grid">
+        <a href="{% url 'quotations:create' %}" class="quick-action-btn">
+            <i class="fas fa-file-signature"></i>
+            <span>New Quote</span>
+        </a>
+        <a href="{% url 'invoices:list' %}" class="quick-action-btn">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Invoices</span>
+        </a>
+        <a href="{% url 'customers:create' %}" class="quick-action-btn">
+            <i class="fas fa-user-plus"></i>
+            <span>Add Customer</span>
+        </a>
+        <a href="{% url 'products:create' %}" class="quick-action-btn">
+            <i class="fas fa-box"></i>
+            <span>Add Product</span>
+        </a>
+    </div>
+</div>
+
+<!-- Main Dashboard Grid -->
+<div class="dashboard-grid">
+    <!-- Sidebar Navigation -->
+    <div class="dashboard-sidebar">
+        <div class="nav-section">
+            <span class="nav-section-title">MAIN</span>
+            <a href="{% url 'dashboard' %}" class="nav-item-dashboard active">
+                <i class="fas fa-home"></i>Dashboard
+            </a>
+            <a href="{% url 'business:profile' %}" class="nav-item-dashboard">
+                <i class="fas fa-building"></i>Business Profile
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <span class="nav-section-title">SALES</span>
+            <a href="{% url 'quotations:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-file-signature"></i>Quotations
+            </a>
+            <a href="{% url 'invoices:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-file-invoice-dollar"></i>Invoices
+            </a>
+            <a href="{% url 'payments:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-credit-card"></i>Payments
+            </a>
+            <a href="{% url 'receipts:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-receipt"></i>Receipts
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <span class="nav-section-title">MANAGEMENT</span>
+            <a href="{% url 'customers:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-users"></i>Customers
+            </a>
+            <a href="{% url 'products:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-boxes"></i>Products
+            </a>
+            <a href="{% url 'vendors:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-truck"></i>Vendors
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <span class="nav-section-title">PURCHASE</span>
+            <a href="{% url 'purchase_orders:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-clipboard-list"></i>PO
+            </a>
+            <a href="{% url 'proforma:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-file-alt"></i>Proforma
+            </a>
+            <a href="{% url 'delivery_notes:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-shipping-fast"></i>Delivery Notes
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <span class="nav-section-title">SETTINGS</span>
+            <a href="{% url 'business:settings' %}" class="nav-item-dashboard">
+                <i class="fas fa-cog"></i>Settings
+            </a>
+            <a href="{% url 'terms:list' %}" class="nav-item-dashboard">
+                <i class="fas fa-file-contract"></i>Terms
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Key Statistics -->
+        <div class="stats-row">
+            <div class="stat-card-dashboard">
+                <div class="stat-content">
+                    <div class="stat-info">
+                        <h6>Total Sales</h6>
+                        <div class="stat-value">₹<span id="stat-total-sales">0</span></div>
+                        <small class="text-success"><i class="fas fa-arrow-up"></i> <span id="stat-sales-change">0%</span> from last month</small>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                </div>
+            </div>
+            
+            <div class="stat-card-dashboard success">
+                <div class="stat-content">
+                    <div class="stat-info">
+                        <h6>Total Invoices</h6>
+                        <div class="stat-value"><span id="stat-total-invoices">0</span></div>
+                        <small class="text-success"><i class="fas fa-check"></i> This month</small>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                </div>
+            </div>
+            
+            <div class="stat-card-dashboard warning">
+                <div class="stat-content">
+                    <div class="stat-info">
+                        <h6>Pending Payments</h6>
+                        <div class="stat-value">₹<span id="stat-outstanding">0</span></div>
+                        <small class="text-danger"><i class="fas fa-exclamation"></i> Requires follow-up</small>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                </div>
+            </div>
+            
+            <div class="stat-card-dashboard danger">
+                <div class="stat-content">
+                    <div class="stat-info">
+                        <h6>Total Customers</h6>
+                        <div class="stat-value"><span id="stat-total-customers">0</span></div>
+                        <small class="text-success"><i class="fas fa-user-plus"></i> <span id="stat-customers-change">0 new</span></small>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity & Charts -->
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5><i class="fas fa-history me-2"></i>Recent Invoices</h5>
+                <a href="{% url 'invoices:list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-invoices-body">
+                        <tr><td colspan="5" class="text-center text-muted py-4">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Business Summary -->
+        <div class="stats-row">
+            <div class="content-card">
+                <h6 class="fw-bold mb-3"><i class="fas fa-chart-pie me-2" style="color: #667eea;"></i>Total Customers</h6>
+                <h3 class="text-primary"><span id="summary-total-customers">0</span></h3>
+                <small class="text-muted">Across all categories</small>
+            </div>
+            
+            <div class="content-card">
+                <h6 class="fw-bold mb-3"><i class="fas fa-boxes me-2" style="color: #00a86b;"></i>Active Products</h6>
+                <h3 class="text-success"><span id="summary-active-products">0</span></h3>
+                <small class="text-muted">In inventory</small>
+            </div>
+            
+            <div class="content-card">
+                <h6 class="fw-bold mb-3"><i class="fas fa-hourglass-half me-2" style="color: #ffc107;"></i>Pending Quotes</h6>
+                <h3 class="text-warning"><span id="summary-pending-quotations">0</span></h3>
+                <small class="text-muted">Awaiting response</small>
+            </div>
+            
+            <div class="content-card">
+                <h6 class="fw-bold mb-3"><i class="fas fa-alert-circle me-2" style="color: #dc3545;"></i>Unpaid Invoices</h6>
+                <h3 class="text-danger"><span id="summary-unpaid-invoices">0</span></h3>
+                <small class="text-muted">Follow up needed</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function() {
+        // Activate current navigation item
+        var currentUrl = window.location.pathname;
+        if (currentUrl === '/dashboard/') {
+            $('.nav-item-dashboard').removeClass('active');
+            $('.nav-item-dashboard:first').addClass('active');
+        }
+        
+        // Fetch dashboard summary every 10 seconds
+        function fetchDashboardSummary() {
+            fetch('{% url "dashboard-summary" %}')
+                .then(r => r.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        $('#stat-total-sales').text((data.total_sales || 0).toFixed(2));
+                        $('#stat-total-invoices').text(data.total_invoices || 0);
+                        $('#stat-outstanding').text((data.outstanding_amount || 0).toFixed(2));
+                        $('#stat-total-customers').text(data.total_customers || 0);
+                        
+                        // Summary cards
+                        $('#summary-total-customers').text(data.total_customers || 0);
+                        $('#summary-active-products').text(data.active_products || 0);
+                        $('#summary-pending-quotations').text(data.pending_quotations || 0);
+                        $('#summary-unpaid-invoices').text(data.unpaid_invoices || 0);
+                    }
+                }).catch(e => console.warn('Failed to load summary', e));
+        }
+        
+        fetchDashboardSummary();
+        setInterval(fetchDashboardSummary, 10000);
+        
+        // Fetch recent invoices
+        function fetchRecentInvoices() {
+            fetch('{% url "dashboard-recent-invoices" %}')
+                .then(r => r.json())
+                .then(json => {
+                    var body = $('#recent-invoices-body');
+                    body.empty();
+                    
+                    if (json.invoices && json.invoices.length) {
+                        json.invoices.forEach(function(inv) {
+                            var badgeClass = 'bg-secondary';
+                            if (inv.status === 'PAID') badgeClass = 'badge bg-success';
+                            else if (inv.status === 'UNPAID') badgeClass = 'badge bg-danger';
+                            else if (inv.status === 'PARTIAL') badgeClass = 'badge bg-warning';
+                            
+                            var row = `<tr>
+                                <td><strong>${inv.invoice_no}</strong></td>
+                                <td>${inv.customer}</td>
+                                <td>${inv.date}</td>
+                                <td>₹${parseFloat(inv.amount).toFixed(2)}</td>
+                                <td><span class="${badgeClass}">${inv.status}</span></td>
+                            </tr>`;
+                            body.append(row);
+                        });
+                    } else {
+                        body.append('<tr><td colspan="5" class="text-center text-muted py-4">No recent invoices</td></tr>');
+                    }
+                }).catch(e => console.warn('Failed to load invoices', e));
+        }
+        
+        fetchRecentInvoices();
+        setInterval(fetchRecentInvoices, 10000);
+    });
+</script>
+{% endblock %}

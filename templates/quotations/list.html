@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Quotations{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Quotations</h2>
+            <p class="text-muted">Manage your quotations</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Quote #</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quotation in quotations %}
+                    <tr>
+                        <td><strong>#{{ quotation.id }}</strong></td>
+                        <td>{{ quotation.customer.name }}</td>
+                        <td>₹{{ quotation.total_amount }}</td>
+                        <td><span class="badge bg-warning">{{ quotation.status }}</span></td>
+                        <td>{{ quotation.created_at|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'quotations:detail' quotation.id %}" class="btn btn-sm btn-info">View</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">No quotations found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

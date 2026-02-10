@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Product{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Header -->
+            <div class="mb-4">
+                <a href="{% url 'products:list' %}" class="text-decoration-none text-muted small">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Products
+                </a>
+                <h2 class="fw-bold mt-2 mb-1">
+                    <i class="fas fa-plus-circle text-primary me-2"></i>Add New Product
+                </h2>
+                <p class="text-muted">Create a new product in your inventory</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Category & Name Row -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="category" class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+                                <select name="category" id="category" class="form-select form-select-lg" required>
+                                    <option value="">-- Select Category --</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted d-block mt-1">Choose the product category</small>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="name" class="form-label fw-bold">Product Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" id="name" class="form-control form-control-lg" placeholder="e.g., Laptop Pro 15" required>
+                                <small class="text-muted d-block mt-1">Enter a descriptive product name</small>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label fw-bold">Description</label>
+                            <textarea name="description" id="description" class="form-control" rows="4" placeholder="Enter product description (optional)"></textarea>
+                            <small class="text-muted d-block mt-1">Add details about the product</small>
+                        </div>
+
+                        <!-- Price & Stock Row -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="price" class="form-label fw-bold">Price <span class="text-danger">*</span></label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" name="price" id="price" class="form-control" step="0.01" placeholder="0.00" required>
+                                </div>
+                                <small class="text-muted d-block mt-1">Product selling price</small>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="stock" class="form-label fw-bold">Stock Quantity <span class="text-danger">*</span></label>
+                                <input type="number" name="stock" id="stock" class="form-control form-control-lg" placeholder="0" required>
+                                <small class="text-muted d-block mt-1">Initial stock quantity</small>
+                            </div>
+                        </div>
+
+                        <!-- Active Status -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" checked style="width: 3rem; height: 1.5rem;">
+                                <label class="form-check-label fw-bold" for="is_active">
+                                    Active Product
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-1">Enable this product to make it visible in your store</small>
+                        </div>
+
+                        <!-- Divider -->
+                        <hr class="my-4">
+
+                        <!-- Form Actions -->
+                        <div class="d-flex gap-2 justify-content-between">
+                            <a href="{% url 'products:list' %}" class="btn btn-outline-secondary btn-lg px-5">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-check me-2"></i>Create Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="alert alert-info mt-4 border-start border-info border-4">
+                <h6 class="alert-heading fw-bold">
+                    <i class="fas fa-info-circle me-2"></i>Help
+                </h6>
+                <p class="mb-0">Fill in all required fields marked with <span class="text-danger">*</span> to create a new product. You can edit product details later from the product list.</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .form-select-lg, .form-control-lg {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-lg {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
+</div>
+{% endblock %}

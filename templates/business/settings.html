@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Business Settings{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Business Settings</h5>
+                </div>
+                <div class="card-body">
+                    {% if business %}
+                    <div class="mb-4">
+                        <h6 class="text-muted">Business Information</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Business Name:</strong></label>
+                                <p>{{ business.name|default:"Not set" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Registration Number:</strong></label>
+                                <p>{{ business.registration_number|default:"Not set" }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Email:</strong></label>
+                                <p>{{ business.email|default:"Not set" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Phone:</strong></label>
+                                <p>{{ business.phone|default:"Not set" }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Address:</strong></label>
+                            <p>{{ business.address|default:"Not set" }}</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>City:</strong></label>
+                                <p>{{ business.city|default:"Not set" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>State:</strong></label>
+                                <p>{{ business.state|default:"Not set" }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>GST Number:</strong></label>
+                                <p>{{ business.gst_number|default:"Not set" }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>PAN Number:</strong></label>
+                                <p>{{ business.pan_number|default:"Not set" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-4">
+                        <h6 class="text-muted">Tax Settings</h6>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Tax Number:</strong></label>
+                            <p>{{ business.tax_number|default:"Not set" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'business:profile' %}" class="btn btn-secondary">Back</a>
+                    </div>
+
+                    {% else %}
+                    <div class="alert alert-info">
+                        <p>No business profile configured. Please contact your administrator.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

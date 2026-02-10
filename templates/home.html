@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+
+{% block title %}NETPRO INFOTECH - Professional Document Management System{% endblock %}
+
+{% block content %}
+<style>
+    .hero-home {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-home::before {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+    }
+    
+    .hero-home::after {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        bottom: -50px;
+        left: -50px;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .feature-grid-home {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 3rem;
+    }
+    
+    .feature-card-home {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+    
+    .feature-card-home:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .feature-icon-home {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        border-radius: 50%;
+    }
+    
+    .icon-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .icon-green { background: linear-gradient(135deg, #00a86b 0%, #009d5c 100%); color: white; }
+    .icon-orange { background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%); color: white; }
+    
+    .stats-home {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 4rem 2rem;
+        margin: 3rem 0;
+    }
+    
+    .stat-box-home {
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #667eea;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        color: #666;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .cta-section-home {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        color: white;
+        margin: 3rem 0;
+    }
+    
+    .business-type-home {
+        background: white;
+        border-left: 5px solid #667eea;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s;
+    }
+    
+    .business-type-home:hover {
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        transform: translateX(5px);
+    }
+    
+    .business-type-home.green {
+        border-left-color: #00a86b;
+    }
+    
+    .business-type-home.orange {
+        border-left-color: #ff8c42;
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero-home">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <span class="badge bg-light text-dark mb-3" style="font-size: 0.95rem; padding: 8px 15px;">
+                    <i class="fas fa-star me-1"></i> Trusted by 500+ Businesses
+                </span>
+                <h1 class="display-3 fw-bold text-white mb-4">
+                    Manage Your Business Like a Pro
+                </h1>
+                <p class="lead text-white mb-4" style="opacity: 0.95;">
+                    All-in-one document management solution for CCTV, laptop, and computer accessories businesses. 
+                    Create professional quotations, invoices, and reports in seconds.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-rocket me-2"></i>Start Free Today
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    {% else %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">Powerful Features for Your Business</h2>
+            <p class="text-muted lead">Everything you need to manage quotations, invoices, and grow your business</p>
+        </div>
+        
+        <div class="feature-grid-home">
+        
+        <div class="feature-grid-home">
+            <div class="feature-card-home">
+                <div class="feature-icon-home icon-blue">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Professional Invoices</h4>
+                <p class="text-muted">Generate beautiful, customized invoices with automatic numbering and GST calculations. Download as PDF instantly.</p>
+            </div>
+            
+            <div class="feature-card-home">
+                <div class="feature-icon-home icon-green">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Quick Quotations</h4>
+                <p class="text-muted">Create accurate quotations in seconds. Perfect for CCTV installations, repairs, and computer accessories sales.</p>
+            </div>
+            
+            <div class="feature-card-home">
+                <div class="feature-icon-home icon-orange">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Customer Management</h4>
+                <p class="text-muted">Keep your customer database organized. Track order history, contact info, and payment status effortlessly.</p>
+            </div>
+            
+            <div class="feature-card-home">
+                <div class="feature-icon-home icon-blue">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Inventory Control</h4>
+                <p class="text-muted">Monitor stock levels of cameras, laptops, accessories. Get alerts for low stock and manage supply efficiently.</p>
+            </div>
+            
+            <div class="feature-card-home">
+                <div class="feature-icon-home icon-green">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Sales Analytics</h4>
+                <p class="text-muted">Detailed reports on sales trends, profit margins, and business performance. Make data-driven decisions.</p>
+            </div>
+            
+            <div class="feature-card-home">
+                <div class="feature-icon-home icon-orange">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Secure & Reliable</h4>
+                <p class="text-muted">Your data is encrypted and backed up. Access your information anytime, anywhere with cloud storage.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-home">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6 stat-box-home">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="col-md-3 col-6 stat-box-home">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Invoices Created</div>
+            </div>
+            <div class="col-md-3 col-6 stat-box-home">
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime Guarantee</div>
+            </div>
+            <div class="col-md-3 col-6 stat-box-home">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Customer Support</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Business Types Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">Build for Your Business Type</h2>
+            <p class="text-muted lead">Specialized tools for different business needs</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="business-type-home">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-video" style="color: #667eea;"></i></div>
+                    <h5 class="fw-bold mb-2">CCTV Installation Business</h5>
+                    <p class="text-muted mb-3">Manage DVR systems, camera installations, service contracts, and maintenance schedules.</p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>Quote for installations</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Service contracts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Maintenance tracking</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="business-type-home green">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-laptop" style="color: #00a86b;"></i></div>
+                    <h5 class="fw-bold mb-2">Laptop Repair & Sales</h5>
+                    <p class="text-muted mb-3">Track repairs, manage spare parts inventory, and handle laptop sales with complete documentation.</p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>Repair invoices</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Spare parts stock</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Warranty tracking</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="business-type-home orange">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-keyboard" style="color: #ff8c42;"></i></div>
+                    <h5 class="fw-bold mb-2">Computer Accessories</h5>
+                    <p class="text-muted mb-3">Manage keyboards, mice, monitors, cables, and other accessories with bulk orders and inventory.</p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>Bulk quotations</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Stock management</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Supplier orders</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section-home">
+    <div class="container">
+        <h2 class="fw-bold mb-3" style="font-size: 2rem;">Ready to Transform Your Business?</h2>
+        <p class="lead mb-4">Join hundreds of successful businesses already using NetPro Infotech</p>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-5">
+            <i class="fas fa-user-plus me-2"></i>Create Free Account
+        </a>
+        <p class="text-white mt-3 mb-0"><small>No credit card required. Only 2 minutes to get started.</small></p>
+        {% else %}
+        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-5">
+            <i class="fas fa-tachometer-alt me-2"></i>Open Dashboard
+        </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

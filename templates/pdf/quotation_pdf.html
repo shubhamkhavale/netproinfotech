@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quotation {{ quotation.quotation_no }}</title>
+  <style>
+    body { font-family: DejaVu Sans, Arial, sans-serif; color: #222; font-size: 12px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
+    .business { text-align:right }
+    .bold { font-weight:700 }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:8px; border:1px solid #ddd; }
+    th { background:#f5f5f5; }
+    .text-right { text-align:right }
+    .totals td { border:none; }
+    .notes { margin-top:16px; font-size:11px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h2>Quotation</h2>
+      <div>#{{ quotation.quotation_no }}</div>
+      <div>{{ quotation.date }}</div>
+    </div>
+    <div class="business">
+      {% if business %}
+        <div class="bold">{{ business.name }}</div>
+        <div>{{ business.address }}</div>
+        <div>{{ business.city }}, {{ business.state }}</div>
+        <div>Phone: {{ business.phone }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+    <div>
+      <div class="bold">Bill To:</div>
+      <div>{{ quotation.customer.name }}</div>
+      {% if quotation.customer.company_name %}<div>{{ quotation.customer.company_name }}</div>{% endif %}
+      <div>{{ quotation.customer.address }}</div>
+      <div>{{ quotation.customer.city }}, {{ quotation.customer.state }}</div>
+    </div>
+    <div style="text-align:right;">
+      <div><strong>Reference:</strong> {{ quotation.reference }}</div>
+      <div><strong>Status:</strong> {{ quotation.get_status_display|default:'Draft' }}</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th>Description</th>
+        <th style="width:80px" class="text-right">Qty</th>
+        <th style="width:120px" class="text-right">Unit Price</th>
+        <th style="width:120px" class="text-right">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in quotation.items.all %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ item.product.name }}{% if item.description %} - {{ item.description }}{% endif %}</td>
+        <td class="text-right">{{ item.quantity }}</td>
+        <td class="text-right">₹ {{ item.price|floatformat:2 }}</td>
+        <td class="text-right">₹ {{ item.total|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table style="width:40%; float:right; margin-top:12px;">
+    <tr>
+      <td>Subtotal</td>
+      <td class="text-right">₹ {{ quotation.subtotal|default:quotation.total_amount|floatformat:2 }}</td>
+    </tr>
+    {% if quotation.discount and quotation.discount > 0 %}
+    <tr>
+      <td>Discount</td>
+      <td class="text-right">- ₹ {{ quotation.discount|floatformat:2 }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td class="bold">Total</td>
+      <td class="text-right bold">₹ {{ quotation.total_amount|floatformat:2 }}</td>
+    </tr>
+  </table>
+
+  <div style="clear:both"></div>
+
+  {% if quotation.notes %}
+    <div class="notes">
+      <strong>Notes:</strong>
+      <div>{{ quotation.notes|linebreaksbr }}</div>
+    </div>
+  {% endif %}
+
+</body>
+</html>

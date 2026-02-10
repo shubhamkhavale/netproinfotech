@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/pdf.css' %}">
+</head>
+<body>
+
+<div class="pdf-header">
+    <img src="{{ company.logo.url }}" height="60">
+    <h2>INVOICE</h2>
+</div>
+
+<p><b>Invoice No:</b> {{ invoice.number }}</p>
+<p><b>Date:</b> {{ invoice.date }}</p>
+
+<table>
+<tr>
+    <th>Description</th>
+    <th>Qty</th>
+    <th>Rate</th>
+    <th>Amount</th>
+</tr>
+{% for item in invoice.items.all %}
+<tr>
+    <td>{{ item.product.name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.rate }}</td>
+    <td>{{ item.total }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Grand Total: ₹{{ invoice.total_amount }}</h3>
+
+<p class="terms">
+    This is a computer generated invoice.
+</p>
+
+</body>
+</html>

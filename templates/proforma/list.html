@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Proforma Invoices{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Proforma Invoices</h2>
+            <p class="text-muted">Manage proforma invoices</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proforma in proformas %}
+                    <tr>
+                        <td><strong>#{{ proforma.id }}</strong></td>
+                        <td>{{ proforma.customer.name }}</td>
+                        <td>₹{{ proforma.total_amount }}</td>
+                        <td>{{ proforma.status }}</td>
+                        <td>{{ proforma.created_at|date:"d M Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No proforma invoices found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

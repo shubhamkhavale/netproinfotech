@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Orders{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2>Purchase Orders</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr><th>PO #</th><th>Vendor</th><th>Amount</th><th>Date</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.vendor.name }}</td>
+                        <td>₹{{ order.total_amount }}</td>
+                        <td>{{ order.order_date|date:"d M Y" }}</td>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted">No purchase orders found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

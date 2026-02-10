@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h4 mb-0">Quotation <span class="text-muted">#{{ quotation.quotation_no }}</span></h1>
+            <small class="text-muted">Created on {{ quotation.date }}</small>
+        </div>
+        <div class="btn-group" role="group" aria-label="actions">
+            <button class="btn btn-outline-secondary" onclick="window.print()">Print</button>
+            <a class="btn btn-outline-primary" href="{% url 'quotations:pdf' quotation.id %}" target="_blank">Download PDF</a>
+            <a class="btn btn-success" href="{% url 'invoices:create' quotation.id %}">Create Invoice</a>
+            <a class="btn btn-link text-danger" href="{% url 'quotations:list' %}">Back to list</a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Bill To</h5>
+                    <p class="mb-1"><strong>{{ quotation.customer.name }}</strong></p>
+                    {% if quotation.customer.company_name %}
+                        <p class="mb-1 text-muted">{{ quotation.customer.company_name }}</p>
+                    {% endif %}
+                    <p class="mb-1">{{ quotation.customer.address }}</p>
+                    <p class="mb-1">{{ quotation.customer.city }}, {{ quotation.customer.state }}</p>
+                    <p class="mb-1">Phone: {{ quotation.customer.phone }}</p>
+                    {% if quotation.customer.email %}
+                        <p class="mb-0">Email: <a href="mailto:{{ quotation.customer.email }}">{{ quotation.customer.email }}</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card border-0 bg-light p-3 shadow-sm">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <small class="text-muted">Quotation Date</small>
+                        <div class="fw-semibold">{{ quotation.date }}</div>
+                    </div>
+                    <div>
+                        <small class="text-muted">Status</small>
+                        <div class="badge bg-info text-dark">{{ quotation.get_status_display|default:'Draft' }}</div>
+                    </div>
+                </div>
+                <hr class="my-2">
+                <div class="d-flex justify-content-between">
+                    <div class="text-muted">Reference</div>
+                    <div class="fw-semibold">{{ quotation.reference }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:48px">#</th>
+                            <th>Description</th>
+                            <th class="text-end" style="width:120px">Qty</th>
+                            <th class="text-end" style="width:140px">Unit Price</th>
+                            <th class="text-end" style="width:140px">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in quotation.items.all %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <div class="fw-semibold">{{ item.product.name }}</div>
+                                {% if item.description %}
+                                    <div class="text-muted small">{{ item.description }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">{{ item.quantity }}</td>
+                            <td class="text-end">₹ {{ item.price|floatformat:2 }}</td>
+                            <td class="text-end">₹ {{ item.total|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No items added to this quotation.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-6">
+                    {% if quotation.notes %}
+                        <div class="border rounded p-3 text-muted small">{{ quotation.notes|linebreaksbr }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end">
+                        <div class="w-50">
+                            <div class="d-flex justify-content-between">
+                                <div class="text-muted">Subtotal</div>
+                                <div class="fw-semibold">₹ {{ quotation.subtotal|default:quotation.total_amount|floatformat:2 }}</div>
+                            </div>
+                            {% if quotation.discount and quotation.discount > 0 %}
+                            <div class="d-flex justify-content-between">
+                                <div class="text-muted">Discount</div>
+                                <div class="text-danger">- ₹ {{ quotation.discount|floatformat:2 }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between fs-5 mt-2">
+                                <div>Total</div>
+                                <div class="fw-bold">₹ {{ quotation.total_amount|floatformat:2 }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <a class="btn btn-outline-secondary" href="{% url 'quotations:list' %}">Close</a>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .btn, .btn-group, .navigation, .search-bar { display: none !important; }
+        body { -webkit-print-color-adjust: exact; }
+    }
+</style>
+
+{% endblock %}

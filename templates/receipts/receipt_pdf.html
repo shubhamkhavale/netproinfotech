@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Helvetica; }
+        table { width:100%; border-collapse: collapse; }
+        td, th { border:1px solid #000; padding:6px; }
+    </style>
+</head>
+<body>
+
+<h2 align="center">PAYMENT RECEIPT</h2>
+
+<p><strong>Receipt No:</strong> {{ receipt.receipt_no }}</p>
+<p><strong>Date:</strong> {{ receipt.date }}</p>
+
+<hr>
+
+<p><strong>Customer:</strong> {{ receipt.invoice.customer.name }}</p>
+<p><strong>Invoice No:</strong> {{ receipt.invoice.invoice_no }}</p>
+
+<table>
+<tr>
+    <th>Payment Mode</th>
+    <th>Amount</th>
+    <th>Transaction ID</th>
+</tr>
+<tr>
+    <td>{{ receipt.payment.payment_mode }}</td>
+    <td>₹ {{ receipt.payment.amount }}</td>
+    <td>{{ receipt.payment.transaction_id }}</td>
+</tr>
+</table>
+
+<br>
+<p><strong>Thank you for your business!</strong></p>
+
+</body>
+</html>

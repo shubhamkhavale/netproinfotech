@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-dark text-white">
+            <h4>🏢 Business Profile</h4>
+        </div>
+
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <h5 class="mb-3">Basic Info</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Business Name</label>
+                        <input type="text" name="name" class="form-control"
+                               value="{{ business.name|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Owner Name</label>
+                        <input type="text" name="owner_name" class="form-control"
+                               value="{{ business.owner_name|default:'' }}">
+                    </div>
+                </div>
+
+                <h5 class="mb-3">Contact</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control"
+                               value="{{ business.email|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-control"
+                               value="{{ business.phone|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>GST Number</label>
+                        <input type="text" name="gst_number" class="form-control"
+                               value="{{ business.gst_number|default:'' }}">
+                    </div>
+                </div>
+
+                <h5 class="mb-3">Address</h5>
+                <input type="text" name="address_line1" class="form-control mb-2"
+                       placeholder="Address Line 1"
+                       value="{{ business.address_line1|default:'' }}">
+                <input type="text" name="address_line2" class="form-control mb-2"
+                       placeholder="Address Line 2"
+                       value="{{ business.address_line2|default:'' }}">
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <input type="text" name="city" class="form-control"
+                               placeholder="City" value="{{ business.city|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" name="state" class="form-control"
+                               placeholder="State" value="{{ business.state|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" name="pincode" class="form-control"
+                               placeholder="Pincode" value="{{ business.pincode|default:'' }}">
+                    </div>
+                </div>
+
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <input type="text" name="bank_name" class="form-control"
+                               placeholder="Bank Name" value="{{ business.bank_name|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" name="account_number" class="form-control"
+                               placeholder="Account Number" value="{{ business.account_number|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" name="ifsc_code" class="form-control"
+                               placeholder="IFSC Code" value="{{ business.ifsc_code|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Company Logo</label>
+                    <input type="file" name="logo" class="form-control">
+                    {% if business.logo %}
+                        <img src="{{ business.logo.url }}" height="80" class="mt-2">
+                    {% endif %}
+                </div>
+
+                <button class="btn btn-success px-4">Save Business</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

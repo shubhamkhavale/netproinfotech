@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - NetPro Infotech{% endblock %}
+
+{% block content %}
+<div class="login-container" style="min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <!-- Registration Card -->
+                <div class="card border-0 shadow-lg">
+                    <!-- Header -->
+                    <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #00a86b 0%, #009d5c 100%); border-radius: 10px 10px 0 0;">
+                        <div class="mb-3">
+                            <i class="fas fa-user-plus" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h4 class="mb-0 fw-bold">Create Account</h4>
+                        <p class="small mb-0" style="opacity: 0.9;">Join NetPro Infotech</p>
+                    </div>
+
+                    <!-- Form Body -->
+                    <div class="card-body p-5">
+                        <!-- Error Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <strong>Error!</strong> {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Registration Form -->
+                        <form method="POST" id="registerForm" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label for="username" class="form-label fw-bold text-dark">
+                                    <i class="fas fa-user me-2" style="color: #00a86b;"></i>Username
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control form-control-lg" 
+                                    id="username" 
+                                    name="username" 
+                                    placeholder="Choose a unique username"
+                                    required
+                                    autofocus
+                                    minlength="3"
+                                    style="border-radius: 8px; border: 2px solid #e9ecef; transition: all 0.3s;">
+                                <small class="form-text text-muted d-block mt-2">Minimum 3 characters, letters and numbers only</small>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="mb-4">
+                                <label for="email" class="form-label fw-bold text-dark">
+                                    <i class="fas fa-envelope me-2" style="color: #00a86b;"></i>Email Address
+                                </label>
+                                <input 
+                                    type="email" 
+                                    class="form-control form-control-lg" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="Enter your email address"
+                                    required
+                                    style="border-radius: 8px; border: 2px solid #e9ecef; transition: all 0.3s;">
+                                <small class="form-text text-muted d-block mt-2">We'll never share your email with anyone</small>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-bold text-dark">
+                                    <i class="fas fa-lock me-2" style="color: #00a86b;"></i>Password
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="password" 
+                                        name="password" 
+                                        placeholder="Create a strong password"
+                                        required
+                                        minlength="8"
+                                        style="border-radius: 8px 0 0 8px; border: 2px solid #e9ecef; transition: all 0.3s;">
+                                    <button 
+                                        class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="togglePassword"
+                                        style="border: 2px solid #e9ecef; border-radius: 0 8px 8px 0;">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted d-block mt-2">
+                                    <i class="fas fa-lock me-1"></i>At least 8 characters with uppercase, lowercase, and numbers
+                                </small>
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div class="mb-4">
+                                <label for="confirm_password" class="form-label fw-bold text-dark">
+                                    <i class="fas fa-lock me-2" style="color: #00a86b;"></i>Confirm Password
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="confirm_password" 
+                                        name="confirm_password" 
+                                        placeholder="Confirm your password"
+                                        required
+                                        style="border-radius: 8px 0 0 8px; border: 2px solid #e9ecef; transition: all 0.3s;">
+                                    <button 
+                                        class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="toggleConfirmPassword"
+                                        style="border: 2px solid #e9ecef; border-radius: 0 8px 8px 0;">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div id="passwordMatch" class="small mt-2" style="display: none;"></div>
+                            </div>
+
+                            <!-- Terms Agreement -->
+                            <div class="mb-4 form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input" 
+                                    id="agreeTerms" 
+                                    name="agree_terms"
+                                    required
+                                    style="width: 1.2em; height: 1.2em; cursor: pointer;">
+                                <label class="form-check-label" for="agreeTerms" style="cursor: pointer; user-select: none;">
+                                    I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                </label>
+                            </div>
+
+                            <!-- Register Button -->
+                            <button 
+                                type="submit" 
+                                class="btn btn-success btn-lg w-100 fw-bold"
+                                style="background: linear-gradient(135deg, #00a86b 0%, #009d5c 100%); border: none; border-radius: 8px; padding: 12px; transition: all 0.3s;">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </form>
+
+                        <!-- Divider -->
+                        <hr class="my-4" style="border-color: #e9ecef;">
+
+                        <!-- Login Link -->
+                        <div class="text-center">
+                            <p class="mb-0">Already have an account?</p>
+                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary fw-bold mt-2 w-100" style="border-radius: 8px;">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer text-center bg-light text-muted small py-3" style="border-radius: 0 0 10px 10px; border-top: 1px solid #e9ecef;">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Your information is secure and encrypted
+                    </div>
+                </div>
+
+                <!-- Version Info -->
+                <div class="text-center mt-4 text-muted small">
+                    <p>NetPro Infotech Document Management System &copy; 2024-2026</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for interactivity -->
+<script>
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const icon = this.querySelector('i');
+        
+        if (confirmPasswordInput.type === 'password') {
+            confirmPasswordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            confirmPasswordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Real-time password match validation
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const passwordMatchDiv = document.getElementById('passwordMatch');
+
+    function checkPasswordMatch() {
+        if (confirmPasswordInput.value.trim() === '') {
+            passwordMatchDiv.style.display = 'none';
+            return;
+        }
+
+        if (passwordInput.value === confirmPasswordInput.value) {
+            passwordMatchDiv.style.display = 'block';
+            passwordMatchDiv.innerHTML = '<i class="fas fa-check text-success me-1"></i><span class="text-success">Passwords match</span>';
+            confirmPasswordInput.style.borderColor = '#28a745';
+        } else {
+            passwordMatchDiv.style.display = 'block';
+            passwordMatchDiv.innerHTML = '<i class="fas fa-times text-danger me-1"></i><span class="text-danger">Passwords do not match</span>';
+            confirmPasswordInput.style.borderColor = '#dc3545';
+        }
+    }
+
+    passwordInput.addEventListener('input', checkPasswordMatch);
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+    // Form validation on submit
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        const agreeTerms = document.getElementById('agreeTerms');
+
+        if (!username.value.trim()) {
+            e.preventDefault();
+            username.style.borderColor = '#dc3545';
+            username.focus();
+            return;
+        }
+
+        if (!email.value.trim()) {
+            e.preventDefault();
+            email.style.borderColor = '#dc3545';
+            email.focus();
+            return;
+        }
+
+        if (!password.value) {
+            e.preventDefault();
+            password.style.borderColor = '#dc3545';
+            password.focus();
+            return;
+        }
+
+        if (password.value.length < 8) {
+            e.preventDefault();
+            password.style.borderColor = '#dc3545';
+            alert('Password must be at least 8 characters long');
+            return;
+        }
+
+        if (confirmPassword.value !== password.value) {
+            e.preventDefault();
+            confirmPassword.style.borderColor = '#dc3545';
+            alert('Passwords do not match');
+            return;
+        }
+
+        if (!agreeTerms.checked) {
+            e.preventDefault();
+            alert('Please agree to the Terms of Service and Privacy Policy');
+            return;
+        }
+    });
+
+    // Add focus effects
+    const inputs = document.querySelectorAll('.form-control, .btn-outline-secondary');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.classList.contains('form-control')) {
+                this.style.borderColor = '#00a86b';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(0, 168, 107, 0.25)';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.classList.contains('form-control')) {
+                this.style.borderColor = '#e9ecef';
+                this.style.boxShadow = 'none';
+            }
+        });
+    });
+</script>
+
+<style>
+    .login-container {
+        background-attachment: fixed;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .form-control-lg, .btn-lg {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+    
+    .form-control:focus {
+        border-color: #00a86b;
+        box-shadow: 0 0 0 0.2rem rgba(0, 168, 107, 0.25);
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #008a4f 0%, #00754a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #f0f8ff;
+        border-color: #0066cc;
+    }
+    
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 2rem 1.5rem !important;
+        }
+        
+        .login-container {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,18 @@
+<h2>Delivery Notes</h2>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Delivery No</th>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Status</th>
+    </tr>
+    {% for note in notes %}
+    <tr>
+        <td>{{ note.delivery_no }}</td>
+        <td>{{ note.customer_name }}</td>
+        <td>{{ note.delivery_date }}</td>
+        <td>{{ note.status }}</td>
+    </tr>
+    {% endfor %}
+</table>

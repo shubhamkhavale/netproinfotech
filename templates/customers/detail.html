@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ customer.name }} - Customer Details{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Customer Header -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user me-2"></i>Customer Details
+                        </h4>
+                        <div class="btn-group">
+                            <a href="{% url 'customers:edit' customer.id %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <a href="{% url 'customers:list' %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="customer-avatar mb-3">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; margin: 0 auto;">
+                                    <i class="fas fa-user fa-3x text-muted"></i>
+                                </div>
+                            </div>
+                            <h5>{{ customer.name }}</h5>
+                            {% if customer.company_name %}
+                            <p class="text-muted">{{ customer.company_name }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table">
+                                <tr>
+                                    <th style="width: 40%">Customer Type:</th>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            {{ customer.get_customer_type_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Phone:</th>
+                                    <td>{{ customer.phone }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>
+                                        {% if customer.email %}
+                                        <a href="mailto:{{ customer.email }}">{{ customer.email }}</a>
+                                        {% else %} - {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>{{ customer.get_full_address }}</td>
+                                </tr>
+                                {% if customer.gst_number %}
+                                <tr>
+                                    <th>GST Number:</th>
+                                    <td>{{ customer.gst_number }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>
+                                        {% if customer.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Created:</th>
+                                    <td>{{ customer.created_at|date:"F d, Y" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <a href="{% url 'quotations:create' %}?customer={{ customer.id }}" class="btn btn-outline-primary w-100 h-100 py-3">
+                        <i class="fas fa-file-signature fa-2x mb-2"></i><br>
+                        Create Quotation
+                    </a>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <a href="{% url 'invoices:create_noarg' %}?customer={{ customer.id }}" class="btn btn-outline-success w-100 h-100 py-3">
+                        <i class="fas fa-file-invoice-dollar fa-2x mb-2"></i><br>
+                        Create Invoice
+                    </a>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <a href="{% url 'payments:list' %}?customer={{ customer.id }}" class="btn btn-outline-warning w-100 h-100 py-3">
+                        <i class="fas fa-credit-card fa-2x mb-2"></i><br>
+                        Record Payment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

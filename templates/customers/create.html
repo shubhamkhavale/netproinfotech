@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Customer{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Add New Customer</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Customer Name *</label>
+                                <input type="text" name="name" id="name" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="company_name" class="form-label">Company Name</label>
+                                <input type="text" name="company_name" id="company_name" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone *</label>
+                                <input type="tel" name="phone" id="phone" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" id="email" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address *</label>
+                            <textarea name="address" id="address" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="city" class="form-label">City *</label>
+                                <input type="text" name="city" id="city" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" name="state" id="state" class="form-control" value="Maharashtra">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customer_type" class="form-label">Customer Type</label>
+                                <select name="customer_type" id="customer_type" class="form-control">
+                                    <option value="individual">Individual</option>
+                                    <option value="business">Business</option>
+                                    <option value="government">Government</option>
+                                    <option value="dealer">Dealer</option>
+                                    <option value="reseller">Reseller</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gst_number" class="form-label">GST Number</label>
+                                <input type="text" name="gst_number" id="gst_number" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Create Customer</button>
+                            <a href="{% url 'customers:list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

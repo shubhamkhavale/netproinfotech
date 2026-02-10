@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - NetPro Infotech{% endblock %}
+
+{% block content %}
+<div class="login-container" style="min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <!-- Login Card -->
+                <div class="card border-0 shadow-lg">
+                    <!-- Header -->
+                    <div class="card-header bg-gradient text-white text-center py-4" style="background: linear-gradient(135deg, #0066cc 0%, #0088cc 100%); border-radius: 10px 10px 0 0;">
+                        <div class="mb-3">
+                            <i class="fas fa-lock" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h4 class="mb-0 fw-bold">Welcome Back</h4>
+                        <p class="small mb-0" style="opacity: 0.9;">NetPro Infotech Portal</p>
+                    </div>
+
+                    <!-- Form Body -->
+                    <div class="card-body p-5">
+                        <!-- Error Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <strong>Login Failed!</strong> {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Login Form -->
+                        <form method="POST" id="loginForm" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label for="username" class="form-label fw-bold text-dark">
+                                    <i class="fas fa-user me-2" style="color: #0066cc;"></i>Username or Email
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control form-control-lg" 
+                                    id="username" 
+                                    name="username" 
+                                    placeholder="Enter your username or email"
+                                    required
+                                    autofocus
+                                    style="border-radius: 8px; border: 2px solid #e9ecef; transition: all 0.3s;">
+                                <small class="form-text text-muted d-block mt-2">Enter the credentials provided to you</small>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-bold text-dark">
+                                    <i class="fas fa-lock me-2" style="color: #0066cc;"></i>Password
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="password" 
+                                        name="password" 
+                                        placeholder="Enter your password"
+                                        required
+                                        style="border-radius: 8px 0 0 8px; border: 2px solid #e9ecef; transition: all 0.3s;">
+                                    <button 
+                                        class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="togglePassword"
+                                        style="border: 2px solid #e9ecef; border-radius: 0 8px 8px 0;">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted d-block mt-2">Your password is encrypted and secure</small>
+                            </div>
+
+                            <!-- Remember Me -->
+                            <div class="mb-3 form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input" 
+                                    id="rememberMe" 
+                                    name="remember_me"
+                                    style="width: 1.2em; height: 1.2em; cursor: pointer;">
+                                <label class="form-check-label" for="rememberMe" style="cursor: pointer; user-select: none;">
+                                    Remember me on this device
+                                </label>
+                            </div>
+
+                            <!-- Login Button -->
+                            <button 
+                                type="submit" 
+                                class="btn btn-primary btn-lg w-100 fw-bold"
+                                style="background: linear-gradient(135deg, #0066cc 0%, #0088cc 100%); border: none; border-radius: 8px; padding: 12px; transition: all 0.3s;">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </form>
+
+                        <!-- Divider -->
+                        <hr class="my-4" style="border-color: #e9ecef;">
+
+                        <!-- Register Link -->
+                        <div class="text-center">
+                            <p class="mb-0">Don't have an account?</p>
+                            <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary fw-bold mt-2 w-100" style="border-radius: 8px;">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </a>
+                        </div>
+
+                        <!-- Forgot Password -->
+                        <div class="text-center mt-3">
+                            <a href="#" class="text-muted text-decoration-none" style="font-size: 0.95rem;">
+                                <i class="fas fa-question-circle me-1"></i>Forgot your password?
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer text-center bg-light text-muted small py-3" style="border-radius: 0 0 10px 10px; border-top: 1px solid #e9ecef;">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Your account is protected with advanced security measures
+                    </div>
+                </div>
+
+                <!-- Version Info -->
+                <div class="text-center mt-4 text-muted small">
+                    <p>NetPro Infotech Document Management System &copy; 2024-2026</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for interactivity -->
+<script>
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Form validation and styling
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        
+        if (!username.value.trim()) {
+            e.preventDefault();
+            username.style.borderColor = '#dc3545';
+            username.focus();
+            return;
+        }
+        
+        if (!password.value.trim()) {
+            e.preventDefault();
+            password.style.borderColor = '#dc3545';
+            password.focus();
+            return;
+        }
+    });
+
+    // Add focus effects
+    const inputs = document.querySelectorAll('.form-control, .btn-outline-secondary');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            if (this.classList.contains('form-control')) {
+                this.style.borderColor = '#0066cc';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(0, 102, 204, 0.25)';
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (this.classList.contains('form-control')) {
+                this.style.borderColor = '#e9ecef';
+                this.style.boxShadow = 'none';
+            }
+        });
+    });
+</script>
+
+<style>
+    .login-container {
+        background-attachment: fixed;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .form-control-lg, .btn-lg {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+    
+    .form-control:focus {
+        border-color: #0066cc;
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0052a3 0%, #0070b0 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #f0f8ff;
+        border-color: #0066cc;
+    }
+    
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 2rem 1.5rem !important;
+        }
+        
+        .login-container {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}

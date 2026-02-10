@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Quotation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Header -->
+            <div class="mb-4">
+                <a href="{% url 'quotations:list' %}" class="text-decoration-none text-muted small">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Quotations
+                </a>
+                <h2 class="fw-bold mt-2 mb-1">
+                    <i class="fas fa-file-signature text-primary me-2"></i>Create Quotation
+                </h2>
+                <p class="text-muted">Create a new quotation for your customer</p>
+            </div>
+
+            <!-- Error Messages -->
+            {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+
+            <!-- Form Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Customer Selection -->
+                        <div class="mb-4">
+                            <label for="customer" class="form-label fw-bold">Select Customer <span class="text-danger">*</span></label>
+                            <select name="customer" id="customer" class="form-select form-select-lg" required>
+                                <option value="">-- Choose a Customer --</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.city }})</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted d-block mt-1">Select the customer for this quotation</small>
+                        </div>
+
+                        <!-- Products Section -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-box me-2 text-info"></i>Add Products
+                            </h5>
+
+                            <div id="products-container">
+                                <div class="product-row mb-3">
+                                    <div class="row g-2">
+                                        <div class="col-md-8">
+                                            <select name="product" class="form-select" required>
+                                                <option value="">-- Select Product --</option>
+                                                {% for product in products %}
+                                                <option value="{{ product.id }}" data-price="{{ product.price }}">
+                                                    {{ product.name }} (₹{{ product.price }})
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="number" name="quantity" class="form-control" placeholder="Qty" min="1" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="addProductRow()">
+                                <i class="fas fa-plus me-1"></i>Add Another Product
+                            </button>
+                        </div>
+
+                        <hr>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex gap-2 justify-content-between">
+                            <a href="{% url 'quotations:list' %}" class="btn btn-outline-secondary btn-lg px-5">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-check me-2"></i>Create Quotation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function addProductRow() {
+    const container = document.getElementById('products-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'product-row mb-3';
+    newRow.innerHTML = `
+        <div class="row g-2">
+            <div class="col-md-8">
+                <select name="product" class="form-select" required>
+                    <option value="">-- Select Product --</option>
+                    {% for product in products %}
+                    <option value="{{ product.id }}" data-price="{{ product.price }}">
+                        {{ product.name }} (₹{{ product.price }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="quantity" class="form-control" placeholder="Qty" min="1" required>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeProductRow(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newRow);
+}
+
+function removeProductRow(btn) {
+    btn.closest('.product-row').remove();
+}
+</script>
+
+<style>
+    .form-select-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    .form-select, .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .btn-lg {
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .product-row {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+    }
+</style>
+{% endblock %}

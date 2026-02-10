@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Quotation{% endblock %}
+
+{% block content %}
+<h2>Quotation</h2>
+
+<p><b>Quotation No:</b> {{ quotation.number }}</p>
+<p><b>Date:</b> {{ quotation.date }}</p>
+
+<h3>Customer Details</h3>
+<p>{{ quotation.customer.name }}</p>
+
+<table class="doc-table">
+<tr>
+    <th>Item</th>
+    <th>Qty</th>
+    <th>Rate</th>
+    <th>Total</th>
+</tr>
+{% for item in quotation.items.all %}
+<tr>
+    <td>{{ item.product.name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.rate }}</td>
+    <td>{{ item.total }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Total: ₹{{ quotation.total_amount }}</h3>
+{% endblock %}
