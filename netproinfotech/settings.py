@@ -39,7 +39,13 @@ if RENDER_EXTERNAL_HOSTNAME:
 elif ALLOWED_HOSTS_ENV:
     ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',')]
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'netproinfotech.onrender.com']
+
+# CSRF Configuration for Render
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+else:
+    CSRF_TRUSTED_ORIGINS = ['https://netproinfotech.onrender.com']
 
 
 # Application definition
@@ -82,7 +88,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'netproinfotech.urls'
+# Trust X-Forwarded-* headers from Render proxy
+SECURE_PROXY_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')ROOT_URLCONF = 'netproinfotech.urls'
 
 TEMPLATES = [
     {
