@@ -1,8 +1,13 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.db import DatabaseError
 from django.views.decorators.http import require_http_methods
 from .models import User
+
+logger = logging.getLogger(__name__)
 
 @require_http_methods(["GET", "POST"])
 def login_view(request):
@@ -25,17 +30,39 @@ def login_view(request):
             return render(request, 'accounts/login.html')
         
         # Authenticate user
-        user = authenticate(request, username=username, password=password)
+        try:
+            user = authenticate(request, username=username, password=password)
+        except DatabaseError:
+            logger.exception(
+                "Database error during authentication",
+                extra={"username": username},
+            )
+            messages.error(
+                request,
+                "We're having trouble signing you in right now. Please try again shortly.",
+            )
+            return render(request, 'accounts/login.html', {'username': username})
         
         if user is not None:
-            login(request, user)
-            
-            # Handle "Remember me" - set session to expire at browser close if unchecked
-            if not remember_me:
-                request.session.set_expiry(0)  # Session expires when browser closes
-            else:
-                request.session.set_expiry(30 * 24 * 60 * 60)  # 30 days
-            
+            try:
+                login(request, user)
+
+                # Handle "Remember me" - set session to expire at browser close if unchecked
+                if not remember_me:
+                    request.session.set_expiry(0)  # Session expires when browser closes
+                else:
+                    request.session.set_expiry(30 * 24 * 60 * 60)  # 30 days
+            except DatabaseError:
+                logger.exception(
+                    "Database/session error during login",
+                    extra={"username": username},
+                )
+                messages.error(
+                    request,
+                    "We're having trouble signing you in right now. Please try again shortly.",
+                )
+                return render(request, 'accounts/login.html', {'username': username})
+
             messages.success(request, f"Welcome back, {user.username}!")
             return redirect('dashboard')
         else:
@@ -95,12 +122,23 @@ def register_view(request):
             return render(request, 'accounts/register.html')
         
         # Check if user already exists
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists. Please choose another.")
-            return render(request, 'accounts/register.html')
-        
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered. Please use another or log in.")
+        try:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists. Please choose another.")
+                return render(request, 'accounts/register.html')
+            
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email already registered. Please use another or log in.")
+                return render(request, 'accounts/register.html')
+        except DatabaseError:
+            logger.exception(
+                "Database error while checking registration uniqueness",
+                extra={"username": username, "email": email},
+            )
+            messages.error(
+                request,
+                "We're unable to process registration right now. Please try again shortly.",
+            )
             return render(request, 'accounts/register.html')
         
         # Create user
@@ -108,8 +146,25 @@ def register_view(request):
             User.objects.create_user(username=username, email=email, password=password)
             messages.success(request, "Account created successfully! You can now log in.")
             return redirect('accounts:login')
-        except Exception as e:
-            messages.error(request, f"Error creating account: {str(e)}")
+        except DatabaseError:
+            logger.exception(
+                "Database error while creating user",
+                extra={"username": username, "email": email},
+            )
+            messages.error(
+                request,
+                "We're unable to create your account right now. Please try again shortly.",
+            )
+            return render(request, 'accounts/register.html')
+        except Exception:
+            logger.exception(
+                "Unexpected error while creating user",
+                extra={"username": username, "email": email},
+            )
+            messages.error(
+                request,
+                "We're unable to create your account right now. Please try again shortly.",
+            )
             return render(request, 'accounts/register.html')
     
     return render(request, 'accounts/register.html')

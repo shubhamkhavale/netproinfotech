@@ -89,7 +89,8 @@ MIDDLEWARE = [
 ]
 
 # Trust X-Forwarded-* headers from Render proxy
-SECURE_PROXY_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')ROOT_URLCONF = 'netproinfotech.urls'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+ROOT_URLCONF = 'netproinfotech.urls'
 
 TEMPLATES = [
     {
