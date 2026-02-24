@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-y61jp&=z9q8g#7m9c27!d&kicum+sw3vxh&9cu$@p4f--3&086')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # Handle ALLOWED_HOSTS
@@ -46,7 +47,16 @@ if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
 else:
     CSRF_TRUSTED_ORIGINS = ['https://netproinfotech.onrender.com']
+DEBUG = False
 
+ALLOWED_HOSTS = ["netproinfotech.onrender.com"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://netproinfotech.onrender.com",  # change this
+]
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
